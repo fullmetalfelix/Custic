@@ -1,0 +1,60 @@
+#!/bin/bash
+
+export CUDAGCC=1
+
+rm *.o *.a *~
+
+wflag="-O3 -w"
+nvc="nvcc -I$CUDA_INC -I$CUDASDK_INC -L$CUDA_LIB -L$CUDASK_LIB -L$CUTIL_LIB "
+nvc="nvcc -I/usr/local/cuda/include -I/usr/local/cudasdk/C/common/inc -L/usr/local/cuda/lib64 -L/usr/local/cudasdk/C/common/lib/linux -L/usr/local/cudasdk/C/lib "
+#--compiler-bindir=~/projects/bin
+
+$nvc -lib  -o cudainterface.a cudainterface.cu --ptxas-options=-v -use_fast_math -arch sm_13 #-deviceemu -g -G
+echo CUDA library compiled!
+
+#$nvc -c cudainterface_CPU.cu
+#echo cudaI CPU done!
+
+gcc $wflag -c InputReader.c
+echo InputReader done!
+
+#gcc $wflag -c output.c
+#echo output done!
+
+gcc -w -c main.c
+echo main done!
+
+$nvc -o scifi  -lm *.o *.a -lcutil_x86_64 -use_fast_math -arch sm_13  #-deviceemu -g -G
+cp scifi ~/projects/bin/custic
+
+
+$nvc -o custictraj4 -lm -arch sm_13 binaryconverter4.cu
+cp custictraj4 ~/projects/bin/
+echo Trajectoy converter compiled!
+
+$nvc -o custictprof -lm -arch sm_13 binaryTprofiler.cu
+cp custictprof ~/projects/bin/
+echo T profiler compiled!
+
+#$nvc -o custictraj2 -lm -arch sm_13 binaryconverter.cu
+#cp custictraj2 ~/projects/bin/
+#echo Trajectoy converter compiled!
+
+
+#$nvc -o custicmerger -lm -arch sm_13 binarymerger.cu
+#cp custicmerger ~/projects/bin/
+#echo Trajectoy merger compiled!
+
+#$nvc -o custicmergerxyz -lm -arch sm_13 binarymergerxyz.cu
+#cp custicmergerxyz ~/projects/bin/
+#echo Trajectoy merger compiled!
+
+$nvc -o custicavg3 -lm -arch sm_13 binaryavg.cu
+cp custicavg3 ~/projects/bin/
+echo Trajectoy avger compiled!
+
+$nvc -o custicavgforce -lm -arch sm_13 binaryavg2.cu
+cp custicavgforce ~/projects/bin/
+echo Trajectoy avger compiled!
+
+export CUDAGCC=0

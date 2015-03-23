@@ -1,0 +1,72 @@
+<Parameters>
+
+optmethod cg
+cgflavor pk-rb
+
+maxsteps 50
+maxdisplace 0.01
+energytol 1.0e-8
+
+linesearchdepth 3
+linesearchdiv 3.0
+
+
+gpuID 1
+
+<End>
+
+<MD>
+resume false
+xyz true 5
+timestep 1.0
+equisteps 2000
+steps 1000
+stats 10
+
+<End>
+<Thermostats>
+//thermo Rescale tip-thr  300.0 1.0
+//athermo Berendsen surf-thr 300.0 10.0
+//thermo Meter tip-free 300.0 10
+//athermo Meter surf-free 300.0 10.0
+<End>
+
+<Clusters>
+default   0 0 0
+tip-fix   0 0 0 1 1 1
+tip-thr   1 1 1 1 1 1
+tip-free  1 1 1 1 1 1
+<End>
+
+<Types>
+Na  23.0  1.000
+Cl  35.4  -1.00
+<End>
+
+<Tip>
+tipcluster tip-fix tip-thr tip-free
+#harmonic tip 15MHz 30nm amp, it will go down 10 angs = 1 nm
+#dynamics harmonic 15.0 30.0 15.0 0.0294371
+<End>
+
+<Atoms>
+tip-free
+Cl   3.00 0.00 0.00 3.00 0.00 0.00
+tip-fix
+Na   0.00 0.00 0.00 0.00 0.00 0.00
+<End>
+
+<Na-Na>
+buckingham 6927.80  0.1863  -4.430  -6.00
+<End>
+
+<Na-Cl>
+buckingham 3046.40  0.2836  -12.82  -6.00
+<End>
+
+<Cl-Cl>
+buckingham 2021.30  0.3588  -88.98  -6.00
+<End>
+
+
+

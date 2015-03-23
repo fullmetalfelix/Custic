@@ -1,0 +1,31 @@
+#!/bin/bash
+
+export CUDAGCC=1
+
+rm *.o *.a *~
+
+wflag="-O3 -w"
+nvc="nvcc -I$CUDA_INC -I$CUDASDK_INC -L$CUDA_LIB -L$CUDASK_LIB -L$CUTIL_LIB "
+nvc="nvcc -I/usr/local/cuda/include -I/usr/local/cudasdk/C/common/inc -L/usr/local/cuda/lib64 -L/usr/local/cudasdk/C/common/lib/linux -L/usr/local/cudasdk/C/lib "
+#--compiler-bindir=~/projects/bin
+
+$nvc -lib  -o cudainterface.a cudainterface.cu --ptxas-options=-v -use_fast_math -arch sm_20 #-deviceemu -g -G
+echo CUDA library compiled!
+
+#$nvc -c cudainterface_CPU.cu
+#echo cudaI CPU done!
+
+gcc $wflag -c InputReader.c
+echo InputReader done!
+
+#gcc $wflag -c output.c
+#echo output done!
+
+gcc -w -c main.c
+echo main done!
+
+$nvc -o scifi20  -lm *.o *.a -lcutil_x86_64 -use_fast_math -arch sm_20  #-deviceemu -g -G
+cp scifi20 ~/projects/bin/custic20
+
+
+export CUDAGCC=0
